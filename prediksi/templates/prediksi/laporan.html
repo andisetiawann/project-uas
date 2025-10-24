@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block title %}Laporan Historis - SmartSense{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <div class="container">
+        <a class="navbar-brand" href="#"><strong>SmartSense</strong></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'laporan_historis' %}">Laporan</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <span class="navbar-text me-3">
+                        Halo, <strong>{{ user.username }}</strong>!
+                    </span>
+                </li>
+                <li class="nav-item">
+                    <form action="{% url 'logout' %}" method="post" class="d-flex">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-light">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5 fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="display-5">Laporan Data Historis</h1>
+            <p class="lead text-muted">Analisis data sensor selama {{ days_filtered }} hari terakhir.</p>
+        </div>
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                Pilih Periode
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="?days=1">24 Jam Terakhir</a></li>
+                <li><a class="dropdown-item" href="?days=7">7 Hari Terakhir</a></li>
+                <li><a class="dropdown-item" href="?days=30">30 Hari Terakhir</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header">Statistik Suhu (℃)</div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between"><span>Rata-rata:</span> <strong>{{ stats.avg_suhu|floatformat:2 }}</strong></li>
+                        <li class="list-group-item d-flex justify-content-between"><span>Maksimum:</span> <strong>{{ stats.max_suhu|floatformat:2 }}</strong></li>
+                        <li class="list-group-item d-flex justify-content-between"><span>Minimum:</span> <strong>{{ stats.min_suhu|floatformat:2 }}</strong></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header">Statistik Kelembapan (%)</div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between"><span>Rata-rata:</span> <strong>{{ stats.avg_kelembapan|floatformat:2 }}</strong></li>
+                        <li class="list-group-item d-flex justify-content-between"><span>Maksimum:</span> <strong>{{ stats.max_kelembapan|floatformat:2 }}</strong></li>
+                        <li class="list-group-item d-flex justify-content-between"><span>Minimum:</span> <strong>{{ stats.min_kelembapan|floatformat:2 }}</strong></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mt-4">
+        <div class="card-body">
+            <h5 class="card-title text-center">Grafik Tren Data</h5>
+            <canvas id="historyChart"></canvas>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mt-4">
+        <div class="card-header">
+            Detail Log Data
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th scope="col">Waktu</th>
+                        <th scope="col">Suhu (℃)</th>
+                        <th scope="col">Kelembapan (%)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in page_obj %}
+                    <tr>
+                        <td>{{ data.timestamp|date:"d M Y, H:i" }}</td>
+                        <td>{{ data.suhu|floatformat:2 }}</td>
+                        <td>{{ data.kelembapan|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center">Tidak ada data untuk ditampilkan.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            <nav>
+                <ul class="pagination justify-content-center mb-0">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?days={{ days_filtered }}&page={{ page_obj.previous_page_number }}">Sebelumnya</a></li>
+                    {% endif %}
+                    <li class="page-item disabled"><span class="page-link">Halaman {{ page_obj.number }} dari {{ page_obj.paginator.num_pages }}</span></li>
+                    {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link" href="?days={{ days_filtered }}&page={{ page_obj.next_page_number }}">Selanjutnya</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('historyChart');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ chart_labels|safe }},
+            datasets: [
+                {
+                    label: 'Suhu (°C)',
+                    data: {{ chart_suhu_data|safe }},
+                    borderColor: 'rgb(255, 99, 132)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                },
+                {
+                    label: 'Kelembapan (%)',
+                    data: {{ chart_kelembapan_data|safe }},
+                    borderColor: 'rgb(54, 162, 235)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: { display: true, text: 'Tren Suhu dan Kelembapan' }
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Waktu'
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
