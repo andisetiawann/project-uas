@@ -3,9 +3,449 @@
 {% block title %}Laporan Historis - SmartSense{% endblock %}
 
 {% block content %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+<style>
+    :root {
+        --primary: #6366f1;
+        --primary-dark: #4f46e5;
+        --secondary: #8b5cf6;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --dark: #0f172a;
+        --light: #f8fafc;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    /* Animated Background Particles */
+    .particles-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        overflow: hidden;
+    }
+
+    .particle {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        animation: float-particle 20s infinite ease-in-out;
+    }
+
+    .particle:nth-child(1) { width: 80px; height: 80px; top: 20%; left: 10%; animation-delay: 0s; }
+    .particle:nth-child(2) { width: 60px; height: 60px; top: 60%; left: 80%; animation-delay: 5s; }
+    .particle:nth-child(3) { width: 100px; height: 100px; top: 80%; left: 20%; animation-delay: 10s; }
+    .particle:nth-child(4) { width: 50px; height: 50px; top: 40%; left: 60%; animation-delay: 15s; }
+
+    @keyframes float-particle {
+        0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+        33% { transform: translate(50px, -50px) scale(1.2); opacity: 0.5; }
+        66% { transform: translate(-30px, 30px) scale(0.9); opacity: 0.4; }
+    }
+
+    /* Navbar 3D */
+    .navbar {
+        background: rgba(15, 23, 42, 0.85) !important;
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+
+    .navbar-brand {
+        font-weight: 900;
+        font-size: 1.5rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .nav-link {
+        color: rgba(255, 255, 255, 0.8) !important;
+        font-weight: 600;
+        transition: all 0.3s;
+        position: relative;
+    }
+
+    .nav-link.active::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        border-radius: 2px;
+    }
+
+    .navbar-text {
+        color: rgba(255, 255, 255, 0.9) !important;
+    }
+
+    /* Main Container */
+    .container {
+        position: relative;
+        z-index: 1;
+        margin-top: 50px;
+        margin-bottom: 50px;
+    }
+
+    .fade-in {
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Header Section */
+    .header-section {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 25px;
+        padding: 40px;
+        margin-bottom: 40px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .display-5 {
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 10px;
+    }
+
+    .lead {
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    /* Dropdown Button 3D */
+    .dropdown .btn {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-weight: 700;
+        box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        transition: all 0.3s;
+        color: white;
+    }
+
+    .dropdown .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(99, 102, 241, 0.6);
+    }
+
+    .dropdown-menu {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95);
+    }
+
+    .dropdown-item {
+        padding: 12px 25px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .dropdown-item:hover {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        color: white;
+        transform: translateX(5px);
+    }
+
+    /* Stats Cards 3D */
+    .card {
+        border: none;
+        border-radius: 25px;
+        overflow: hidden;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+    }
+
+    .card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-weight: 700;
+        font-size: 1.1rem;
+        padding: 20px;
+        border: none;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        animation: shimmer 3s infinite;
+    }
+
+    @keyframes shimmer {
+        0% { left: -100%; }
+        100% { left: 100%; }
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+
+    /* List Group Styling */
+    .list-group-item {
+        border: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        padding: 18px 0;
+        font-size: 1.05rem;
+        transition: all 0.3s;
+    }
+
+    .list-group-item:hover {
+        background: linear-gradient(90deg, rgba(99, 102, 241, 0.05), transparent);
+        transform: translateX(5px);
+    }
+
+    .list-group-item strong {
+        color: var(--primary);
+        font-weight: 800;
+        font-size: 1.2rem;
+    }
+
+    /* Chart Card */
+    .chart-card {
+        margin-top: 40px;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+        border-radius: 25px;
+        padding: 40px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--dark);
+        margin-bottom: 30px;
+        text-align: center;
+        position: relative;
+    }
+
+    .card-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        border-radius: 2px;
+    }
+
+    /* Table Styling */
+    .table-responsive {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+
+    .table thead {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        color: white;
+    }
+
+    .table thead th {
+        font-weight: 700;
+        padding: 20px;
+        border: none;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.9rem;
+    }
+
+    .table tbody tr {
+        transition: all 0.3s;
+    }
+
+    .table tbody tr:hover {
+        background: linear-gradient(90deg, rgba(99, 102, 241, 0.08), transparent);
+        transform: scale(1.01);
+    }
+
+    .table tbody td {
+        padding: 18px 20px;
+        font-weight: 600;
+        color: var(--dark);
+        vertical-align: middle;
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(99, 102, 241, 0.03);
+    }
+
+    /* Card Footer */
+    .card-footer {
+        background: rgba(248, 250, 252, 0.5);
+        border: none;
+        padding: 25px;
+    }
+
+    /* Pagination 3D */
+    .pagination .page-link {
+        border: none;
+        border-radius: 50px;
+        margin: 0 5px;
+        padding: 10px 20px;
+        font-weight: 700;
+        background: white;
+        color: var(--primary);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s;
+    }
+
+    .pagination .page-link:hover {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+    }
+
+    .pagination .page-item.disabled .page-link {
+        background: transparent;
+        color: var(--dark);
+        box-shadow: none;
+        font-weight: 600;
+    }
+
+    /* Stats Badge */
+    .stats-badge {
+        display: inline-block;
+        padding: 8px 20px;
+        background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+        color: white;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        margin-left: 10px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .header-section {
+            padding: 30px 20px;
+        }
+
+        .display-5 {
+            font-size: 1.8rem;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .chart-card {
+            padding: 25px 15px;
+        }
+    }
+
+    /* Loading State */
+    .table-loading {
+        text-align: center;
+        padding: 50px;
+        color: var(--dark);
+        font-weight: 600;
+    }
+
+    /* Empty State */
+    .empty-state {
+        padding: 60px;
+        text-align: center;
+        color: #64748b;
+    }
+
+    .empty-state svg {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+
+    /* Icon Animations */
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    .stat-icon {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        display: block;
+        animation: pulse 2s infinite;
+    }
+
+    /* Row Stats Container */
+    .row {
+        position: relative;
+        z-index: 2;
+    }
+</style>
+
+<!-- Particles Background -->
+<div class="particles-bg">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+</div>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
-        <a class="navbar-brand" href="#"><strong>SmartSense</strong></a>
+        <a class="navbar-brand" href="#"><strong>✨ SmartSense</strong></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -27,7 +467,7 @@
                 <li class="nav-item">
                     <form action="{% url 'logout' %}" method="post" class="d-flex">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-outline-light">Logout</button>
+                        <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
                     </form>
                 </li>
             </ul>
@@ -35,69 +475,98 @@
     </div>
 </nav>
 
-<div class="container mt-5 fade-in">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<!-- Main Content -->
+<div class="container fade-in">
+    <!-- Header Section -->
+    <div class="header-section">
         <div>
-            <h1 class="display-5">Laporan Data Historis</h1>
-            <p class="lead text-muted">Analisis data sensor selama {{ days_filtered }} hari terakhir.</p>
+            <h1 class="display-5">📊 Laporan Data Historis</h1>
+            <p class="lead">Analisis data sensor selama <span class="stats-badge">{{ days_filtered }} Hari</span></p>
         </div>
         <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                Pilih Periode
+                🗓️ Pilih Periode
             </button>
             <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="?days=1">24 Jam Terakhir</a></li>
-                <li><a class="dropdown-item" href="?days=7">7 Hari Terakhir</a></li>
-                <li><a class="dropdown-item" href="?days=30">30 Hari Terakhir</a></li>
+                <li><a class="dropdown-item" href="?days=1">⏰ 24 Jam Terakhir</a></li>
+                <li><a class="dropdown-item" href="?days=7">📅 7 Hari Terakhir</a></li>
+                <li><a class="dropdown-item" href="?days=30">📆 30 Hari Terakhir</a></li>
             </ul>
         </div>
     </div>
     
+    <!-- Stats Cards -->
     <div class="row">
         <div class="col-md-6 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-header">Statistik Suhu (℃)</div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="stat-icon">🌡️</span>
+                    Statistik Suhu (℃)
+                </div>
                 <div class="card-body">
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between"><span>Rata-rata:</span> <strong>{{ stats.avg_suhu|floatformat:2 }}</strong></li>
-                        <li class="list-group-item d-flex justify-content-between"><span>Maksimum:</span> <strong>{{ stats.max_suhu|floatformat:2 }}</strong></li>
-                        <li class="list-group-item d-flex justify-content-between"><span>Minimum:</span> <strong>{{ stats.min_suhu|floatformat:2 }}</strong></li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>📈 Rata-rata:</span> 
+                            <strong>{{ stats.avg_suhu|floatformat:2 }}°C</strong>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>🔥 Maksimum:</span> 
+                            <strong>{{ stats.max_suhu|floatformat:2 }}°C</strong>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>❄️ Minimum:</span> 
+                            <strong>{{ stats.min_suhu|floatformat:2 }}°C</strong>
+                        </li>
                     </ul>
                 </div>
             </div>
         </div>
         <div class="col-md-6 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-header">Statistik Kelembapan (%)</div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="stat-icon">💧</span>
+                    Statistik Kelembapan (%)
+                </div>
                 <div class="card-body">
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between"><span>Rata-rata:</span> <strong>{{ stats.avg_kelembapan|floatformat:2 }}</strong></li>
-                        <li class="list-group-item d-flex justify-content-between"><span>Maksimum:</span> <strong>{{ stats.max_kelembapan|floatformat:2 }}</strong></li>
-                        <li class="list-group-item d-flex justify-content-between"><span>Minimum:</span> <strong>{{ stats.min_kelembapan|floatformat:2 }}</strong></li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>📊 Rata-rata:</span> 
+                            <strong>{{ stats.avg_kelembapan|floatformat:2 }}%</strong>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>💦 Maksimum:</span> 
+                            <strong>{{ stats.max_kelembapan|floatformat:2 }}%</strong>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>🏜️ Minimum:</span> 
+                            <strong>{{ stats.min_kelembapan|floatformat:2 }}%</strong>
+                        </li>
                     </ul>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="card shadow-sm mt-4">
+    <!-- Chart Section -->
+    <div class="card chart-card">
         <div class="card-body">
-            <h5 class="card-title text-center">Grafik Tren Data</h5>
+            <h5 class="card-title">📈 Grafik Tren Data</h5>
             <canvas id="historyChart"></canvas>
         </div>
     </div>
 
+    <!-- Data Table -->
     <div class="card shadow-sm mt-4">
         <div class="card-header">
-            Detail Log Data
+            📋 Detail Log Data
         </div>
         <div class="table-responsive">
             <table class="table table-striped table-hover mb-0">
                 <thead>
                     <tr>
-                        <th scope="col">Waktu</th>
-                        <th scope="col">Suhu (℃)</th>
-                        <th scope="col">Kelembapan (%)</th>
+                        <th scope="col">⏰ Waktu</th>
+                        <th scope="col">🌡️ Suhu (℃)</th>
+                        <th scope="col">💧 Kelembapan (%)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -109,7 +578,14 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="3" class="text-center">Tidak ada data untuk ditampilkan.</td>
+                        <td colspan="3" class="empty-state">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                <p><strong>Tidak ada data untuk ditampilkan.</strong></p>
+                            </div>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -119,11 +595,23 @@
             <nav>
                 <ul class="pagination justify-content-center mb-0">
                     {% if page_obj.has_previous %}
-                        <li class="page-item"><a class="page-link" href="?days={{ days_filtered }}&page={{ page_obj.previous_page_number }}">Sebelumnya</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="?days={{ days_filtered }}&page={{ page_obj.previous_page_number }}">
+                                ← Sebelumnya
+                            </a>
+                        </li>
                     {% endif %}
-                    <li class="page-item disabled"><span class="page-link">Halaman {{ page_obj.number }} dari {{ page_obj.paginator.num_pages }}</span></li>
+                    <li class="page-item disabled">
+                        <span class="page-link">
+                            Halaman {{ page_obj.number }} dari {{ page_obj.paginator.num_pages }}
+                        </span>
+                    </li>
                     {% if page_obj.has_next %}
-                        <li class="page-item"><a class="page-link" href="?days={{ days_filtered }}&page={{ page_obj.next_page_number }}">Selanjutnya</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="?days={{ days_filtered }}&page={{ page_obj.next_page_number }}">
+                                Selanjutnya →
+                            </a>
+                        </li>
                     {% endif %}
                 </ul>
             </nav>
@@ -133,7 +621,16 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    // Chart Configuration
     const ctx = document.getElementById('historyChart');
+    const gradient1 = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
+    gradient1.addColorStop(0, 'rgba(245, 87, 108, 0.3)');
+    gradient1.addColorStop(1, 'rgba(245, 87, 108, 0.05)');
+
+    const gradient2 = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
+    gradient2.addColorStop(0, 'rgba(79, 172, 254, 0.3)');
+    gradient2.addColorStop(1, 'rgba(79, 172, 254, 0.05)');
+
     new Chart(ctx, {
         type: 'line',
         data: {
@@ -142,32 +639,152 @@
                 {
                     label: 'Suhu (°C)',
                     data: {{ chart_suhu_data|safe }},
-                    borderColor: 'rgb(255, 99, 132)',
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgb(245, 87, 108)',
+                    backgroundColor: gradient1,
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 3,
+                    pointRadius: 6,
+                    pointHoverRadius: 8,
+                    pointBackgroundColor: 'rgb(245, 87, 108)',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 3,
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(245, 87, 108)',
                 },
                 {
                     label: 'Kelembapan (%)',
                     data: {{ chart_kelembapan_data|safe }},
-                    borderColor: 'rgb(54, 162, 235)',
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgb(79, 172, 254)',
+                    backgroundColor: gradient2,
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 3,
+                    pointRadius: 6,
+                    pointHoverRadius: 8,
+                    pointBackgroundColor: 'rgb(79, 172, 254)',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 3,
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(79, 172, 254)',
                 }
             ]
         },
         options: {
             responsive: true,
+            maintainAspectRatio: true,
             plugins: {
-                title: { display: true, text: 'Tren Suhu dan Kelembapan' }
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        font: {
+                            size: 14,
+                            weight: 'bold',
+                            family: 'Inter'
+                        },
+                        padding: 20,
+                        usePointStyle: true,
+                        pointStyle: 'circle'
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Tren Suhu dan Kelembapan',
+                    font: {
+                        size: 18,
+                        weight: 'bold',
+                        family: 'Inter'
+                    },
+                    padding: 20
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                    padding: 15,
+                    titleFont: {
+                        size: 15,
+                        weight: 'bold'
+                    },
+                    bodyFont: {
+                        size: 14
+                    },
+                    cornerRadius: 10,
+                    displayColors: true,
+                    borderColor: 'rgba(255, 255, 255, 0.1)',
+                    borderWidth: 1
+                }
             },
             scales: {
+                y: {
+                    beginAtZero: false,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)',
+                        drawBorder: false
+                    },
+                    ticks: {
+                        font: {
+                            size: 12,
+                            weight: '600',
+                            family: 'Inter'
+                        },
+                        padding: 10
+                    }
+                },
                 x: {
-                    display: true,
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        font: {
+                            size: 11,
+                            weight: '600',
+                            family: 'Inter'
+                        },
+                        padding: 10
+                    },
                     title: {
                         display: true,
-                        text: 'Waktu'
+                        text: 'Waktu',
+                        font: {
+                            size: 13,
+                            weight: 'bold'
+                        }
                     }
                 }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            },
+            animation: {
+                duration: 2000,
+                easing: 'easeInOutQuart'
             }
         }
+    });
+
+    // Add hover effect to cards
+    document.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-10px) scale(1.02)';
+        });
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+
+    // Smooth scroll animation
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
     });
 </script>
 {% endblock %}

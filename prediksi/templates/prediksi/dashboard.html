@@ -7,112 +7,441 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
         :root {
-            --primary-color: #4a69bd;
-            --light-grey: #f0f2f5;
-            --dark-grey: #4a4a4a;
-            --text-color: #333;
-            --card-bg: #ffffff;
-            --border-radius: 12px;
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --light: #f8fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body { 
-            font-family: 'Poppins', sans-serif; 
-            background-color: var(--light-grey); 
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
         }
-        
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .shape1 {
+            width: 300px;
+            height: 300px;
+            background: white;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape2 {
+            width: 200px;
+            height: 200px;
+            background: #fbbf24;
+            top: 60%;
+            right: 20%;
+            animation-delay: 5s;
+        }
+
+        .shape3 {
+            width: 150px;
+            height: 150px;
+            background: #3b82f6;
+            bottom: 10%;
+            left: 30%;
+            animation-delay: 10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+
+        /* Navbar 3D */
+        .navbar {
+            background: rgba(15, 23, 42, 0.8) !important;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-weight: 900;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+            font-weight: 600;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+
+        /* Main Container */
         .main-container {
+            position: relative;
+            z-index: 1;
+            padding: 60px 20px;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Glass Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.3) inset;
+            max-width: 1200px;
+            margin: 0 auto;
+            transform-style: preserve-3d;
+            animation: cardEntrance 0.8s ease-out;
+        }
+
+        @keyframes cardEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(50px) rotateX(-10deg);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateX(0);
+            }
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        /* 3D Data Cards */
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .data-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 35px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .data-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(102, 126, 234, 0.6);
+        }
+
+        .data-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .data-card:hover::before {
+            opacity: 1;
+        }
+
+        .data-card.temp {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .data-card.humidity {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+        }
+
+        .card-label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-value {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin: 10px 0;
+            text-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        /* Risk Alert 3D */
+        .risk-alert {
+            margin: 40px 0;
+            padding: 35px;
+            border-radius: 20px;
+            border: none;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            animation: pulseAlert 2s infinite;
+        }
+
+        @keyframes pulseAlert {
+            0%, 100% { box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+            50% { box-shadow: 0 15px 45px rgba(0,0,0,0.3); }
+        }
+
+        .risk-alert::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .alert-heading {
+            font-weight: 800;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        /* Chart Container 3D */
+        .chart-container {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            margin: 40px 0;
+            box-shadow: 
+                0 20px 40px rgba(0,0,0,0.1),
+                0 0 0 1px rgba(0,0,0,0.05) inset;
+            transition: all 0.3s;
+        }
+
+        .chart-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+
+        .chart-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        /* Timestamp */
+        .timestamp {
+            text-align: center;
+            color: rgba(15, 23, 42, 0.6);
+            font-size: 0.9rem;
+            margin: 30px 0;
+            font-weight: 500;
+        }
+
+        /* Button 3D */
+        .btn-3d {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-3d:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.6);
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+        }
+
+        .btn-3d:active {
+            transform: translateY(-1px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .glass-card {
+                padding: 30px 20px;
+            }
+
+            .page-title {
+                font-size: 1.8rem;
+            }
+
+            .data-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .card-value {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Loading Animation */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.9);
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 50px 20px;
+            z-index: 9999;
+            animation: fadeOut 1s 0.5s forwards;
         }
 
-        .container { 
-            background: var(--card-bg); 
-            padding: 40px; 
-            border-radius: var(--border-radius); 
-            box-shadow: 0 8px 30px rgba(0,0,0,0.08); 
-            text-align: center; 
-            max-width: 800px; /* Diperlebar untuk chart */
-            width: 100%;
-            border-top: 5px solid var(--primary-color);
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
         }
 
-        .data-grid { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 20px; 
-            margin: 30px 0; 
-        } 
-
-        .data-box { 
-            background: #f8f9fa;
-            padding: 25px; 
-            border-radius: var(--border-radius);
-            border: 1px solid #e9ecef;
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
 
-        .data-box h3 { 
-            margin-top: 0;
-            font-weight: 600;
-            font-size: 1em;
-            color: var(--dark-grey);
-        }
-
-        .data-box p { 
-            font-size: 2.8em; 
-            margin: 0; 
-            font-weight: 700; 
-            color: var(--primary-color); 
-        }
-
-        .timestamp { 
-            font-size: 0.85em; 
-            color: #6c757d; 
-            margin-top: 25px; 
-        }
-
-        @media (max-width: 600px) {
-            .data-grid { grid-template-columns: 1fr; }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
     
     <meta http-equiv="refresh" content="15">
 </head>
 <body>
+    <!-- Loading Animation -->
+    <div class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="floating-shape shape1"></div>
+        <div class="floating-shape shape2"></div>
+        <div class="floating-shape shape3"></div>
+    </div>
     
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a style="color: #333;" class="navbar-brand" href="#"><strong>SmartSense</strong></a>
+            <a class="navbar-brand" href="#"><strong>✨ SmartSense</strong></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a style="color: #333;" class="nav-link active" href="{% url 'dashboard' %}">Dashboard</a>
+                        <a class="nav-link active" href="{% url 'dashboard' %}">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a style="color: #333;" class="nav-link" href="{% url 'laporan_historis' %}">Laporan</a>
+                        <a class="nav-link" href="{% url 'laporan_historis' %}">Laporan</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <span style="color: #333;" class="navbar-text me-3">
+                            <span class="navbar-text me-3" style="color: rgba(255,255,255,0.9);">
                                 Halo, <strong>{{ user.username }}</strong>!
                             </span>
                         </li>
                         <li class="nav-item">
                             <form action="{% url 'logout' %}" method="post" class="d-flex">
                                 {% csrf_token %}
-                                <button style="background-color: #dc3545; color: white; border: none;" type="submit" class="btn">Logout</button>
+                                <button type="submit" class="btn btn-danger btn-sm">Logout</button>
                             </form>
                         </li>
                     {% else %}
@@ -120,7 +449,7 @@
                             <a class="nav-link" href="{% url 'login' %}">Login</a>
                         </li>
                         <li class="nav-item">
-                            <a class="btn btn-primary ms-2" href="{% url 'register' %}">Register</a>
+                            <a class="btn btn-primary btn-sm ms-2" href="{% url 'register' %}">Register</a>
                         </li>
                     {% endif %}
                 </ul>
@@ -128,52 +457,62 @@
         </div>
     </nav>
 
+    <!-- Main Content -->
     <div class="main-container">
-        <div class="container">
-            <h1 class="display-5">Prediksi Risiko Jamur Pada Roti</h1>
+        <div class="glass-card">
+            <h1 class="page-title">🍞 Prediksi Risiko Jamur Pada Roti</h1>
             
+            <!-- Data Cards -->
             <div class="data-grid">
-                <div class="data-box">
-                    <h3>🌡️ Suhu Saat Ini</h3>
-                    <p>{{ suhu|floatformat:2 }} °C</p>
+                <div class="data-card temp">
+                    <div class="card-icon">🌡️</div>
+                    <div class="card-label">Suhu Saat Ini</div>
+                    <div class="card-value">{{ suhu|floatformat:1 }}°</div>
+                    <div style="opacity: 0.8;">Celsius</div>
                 </div>
-                <div class="data-box">
-                    <h3>💧 Kelembapan</h3>
-                    <p>{{ kelembapan|floatformat:2 }} %</p>
+                <div class="data-card humidity">
+                    <div class="card-icon">💧</div>
+                    <div class="card-label">Kelembapan</div>
+                    <div class="card-value">{{ kelembapan|floatformat:1 }}%</div>
+                    <div style="opacity: 0.8;">Humidity</div>
                 </div>
             </div>
 
+            <!-- Risk Alert -->
             {% if level_risiko == 'Tinggi' %}
-                <div class="alert alert-danger" role="alert">
+                <div class="risk-alert alert-danger">
             {% elif level_risiko == 'Sedang' %}
-                <div class="alert alert-warning" role="alert">
+                <div class="risk-alert alert-warning">
             {% elif level_risiko == 'Rendah' %}
-                <div class="alert alert-info" role="alert">
+                <div class="risk-alert alert-info">
             {% elif level_risiko == 'Aman' %}
-                <div class="alert alert-success" role="alert">
+                <div class="risk-alert alert-success">
             {% else %}
-                <div class="alert alert-secondary" role="alert">
+                <div class="risk-alert alert-secondary">
             {% endif %}
-                <h4 class="alert-heading">Level Risiko: {{ level_risiko }}</h4>
-                <p class="mb-0">{{ rekomendasi }}</p>
+                <h4 class="alert-heading">⚠️ Level Risiko: {{ level_risiko }}</h4>
+                <p class="mb-0" style="font-size: 1.1rem; font-weight: 500;">{{ rekomendasi }}</p>
             </div>
 
-            <div class="card mt-4">
-                <div class="card-body">
-                    <h5 class="card-title text-center">Tren Data 12 Jam Terakhir</h5>
-                    <canvas id="sensorChart"></canvas>
-                </div>
+            <!-- Chart -->
+            <div class="chart-container">
+                <h5 class="chart-title">📊 Tren Data 12 Jam Terakhir</h5>
+                <canvas id="sensorChart"></canvas>
             </div>
 
+            <!-- Timestamp -->
             <p class="timestamp">
                 {% if waktu_update != "Belum ada data" %}
-                    Data terakhir diambil pada: {{ waktu_update }}
+                    ⏰ Data terakhir diambil pada: <strong>{{ waktu_update }}</strong>
                 {% else %}
                     {{ waktu_update }}
                 {% endif %}
             </p>
 
-            <a href="{% url 'dashboard' %}" class="btn btn-dark mt-3">🔄 Muat Ulang Halaman</a>
+            <!-- Reload Button -->
+            <div class="text-center">
+                <a href="{% url 'dashboard' %}" class="btn-3d">🔄 Muat Ulang Data</a>
+            </div>
         </div>
     </div>
     
@@ -181,6 +520,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <script>
+        // Chart Configuration
         const ctx = document.getElementById('sensorChart');
         new Chart(ctx, {
             type: 'line',
@@ -190,21 +530,150 @@
                     {
                         label: 'Suhu (°C)',
                         data: {{ chart_suhu_data|safe }},
-                        borderColor: 'rgb(255, 99, 132)',
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgb(245, 87, 108)',
+                        backgroundColor: 'rgba(245, 87, 108, 0.1)',
                         fill: true,
-                        tension: 0.1
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        pointBackgroundColor: 'rgb(245, 87, 108)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
                     },
                     {
                         label: 'Kelembapan (%)',
                         data: {{ chart_kelembapan_data|safe }},
-                        borderColor: 'rgb(54, 162, 235)',
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgb(79, 172, 254)',
+                        backgroundColor: 'rgba(79, 172, 254, 0.1)',
                         fill: true,
-                        tension: 0.1
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        pointBackgroundColor: 'rgb(79, 172, 254)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
                     }
                 ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            padding: 20,
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        padding: 15,
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        cornerRadius: 10
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        },
+                        ticks: {
+                            font: {
+                                size: 12,
+                                weight: '600'
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            font: {
+                                size: 11,
+                                weight: '600'
+                            }
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
             }
+        });
+
+        const ctxSuhu = document.getElementById('suhuChart').getContext('2d');
+        const suhuChart = new Chart(ctxSuhu, {
+            type: 'line',
+            data: {
+                labels: {{ chart_labels|safe }},
+                datasets: [{
+                    label: 'Suhu (°C)',
+                    data: {{ chart_suhu_data|safe }},
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1,
+                    fill: false
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        const ctxKelembapan = document.getElementById('kelembapanChart').getContext('2d');
+        const kelembapanChart = new Chart(ctxKelembapan, {
+            type: 'line',
+            data: {
+                labels: {{ chart_labels|safe }},
+                datasets: [{
+                    label: 'Kelembapan (%)',
+                    data: {{ chart_kelembapan_data|safe }},
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1,
+                    fill: false
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Add parallax effect on mouse move
+        document.addEventListener('mousemove', (e) => {
+            const cards = document.querySelectorAll('.data-card');
+            const mouseX = e.clientX / window.innerWidth - 0.5;
+            const mouseY = e.clientY / window.innerHeight - 0.5;
+            
+            cards.forEach(card => {
+                const depth = 20;
+                const moveX = mouseX * depth;
+                const moveY = mouseY * depth;
+                card.style.transform = `perspective(1000px) rotateY(${moveX}deg) rotateX(${-moveY}deg)`;
+            });
         });
     </script>
 </body>
